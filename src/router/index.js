@@ -1,27 +1,29 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
-
+// import Home from '../views/Home.vue'
+import Booking from '../views/Booking.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name:"Booking",
+    component: Booking,
+    children: [
+      // this will render the UserList for these 3 URLs
+      // - /users
+      // - /users/list
+      // - /people
+      { path: '/NewsletterSign-up', component: Booking, alias: ['/NewsletterSign-up'] },
+    ],
   },
   // {
-  //   path: '/',
-  //   name: '404',
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/Home.vue')
+  //   path:'/booking',
+  //   name:"Booking",
+  //   component: () => import('../views/Booking.vue')
   // },
-  {
-    path:"/NewsletterSign-up",
-    name:"Booking",
-    component: () => import('../views/Booking.vue')
-  },
-  {
-    path: '/:pathMatch(.*)',
-    redirect: '/'
-  },
+  // {
+  //   path: '/:pathMatch(.*)',
+  //   redirect: '/'
+  // },
   // {
   // path: '/about',
   // name: 'About',

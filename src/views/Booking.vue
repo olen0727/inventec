@@ -1,18 +1,15 @@
 <template>
   <div class="home">
-    <iframe
-      class="istagFrame"
-      src="https://livetour.istaging.com/c3b39829-7dde-40b6-b9c1-d7c6ae28eb37"
-      frameborder="0"
-      marginheight="0"
-      marginwidth="0"
-      width="100%"
-      height="100%"
-      scrolling="auto"
-    ></iframe>
-    <div class="wrapper">
-      
+    <VRIframe />
+    <ul class="linkList">
+      <li class="news" @click="openPOP()"><img src="../assets/icon01.png" alt=""></li>
+      <li class="fb"><a href="https://www.facebook.com/Inventec-Data-Center-Solutions-101107418050871/?view_public_for=101107418050871" target="_blank"><img src="../assets/icon02.png" alt=""></a></li>
+      <li class="in"><a href="https://www.linkedin.com/company/inventec-data-center-solutions?trk=public_profile_experience-item_result-card_subtitle-click" target="_blank"><img src="../assets/icon03.png" alt=""></a></li>
+      <li class="tube"><a href="https://www.youtube.com/channel/UCe68PJ6kFvBBfAzjNwIddiA?view_as=subscriber" target="_blank"><img src="../assets/icon04.png" alt=""></a></li>
+    </ul>
+    <div class="wrapper" @click.self="closePOP()" v-show="popupIsOpen">
       <form class="formBox" @submit.prevent="onsubmit()">
+        <span class="closeBtn" @click="closePOP()"><img src="../assets/close.png" alt=""></span>
         <img class="logo" src="../assets/invenlogo.png" alt="">
         <div class="formRow">
           <div class="formCol title">
@@ -97,18 +94,17 @@
           </div>
         </div>
         <div class="formRow">
-          <div class="formCol content">
+          <div class="formCol content withoutTitle">
             <p>Welcome any comment and suggestion that you may have.</p>
           </div>
         </div>
         <div class="formRow">
-          <div class="formCol title"></div>
-          <div class="formCol content">
+          <div class="formCol content withoutTitle">
             <textarea class="formItem textarea" rows="8" v-model="this.bookingForm.msg"></textarea>
           </div>
         </div>
         <div class="formRow">
-          <div class="formCol content">
+          <div class="formCol content withoutTitle">
             <label class="checkLabel">
               <input type="checkbox" required />I agree to privacy policy to process of my personal data for marketing purpose.
             </label>
@@ -128,15 +124,21 @@
 <script>
 // @ is an alias to /src
 // import HelloWorld from "@/components/HelloWorld.vue";
+
 import axios from "axios";
+import VRIframe from '@/components/VRIframe.vue'
+import { useRouter, useRoute } from "vue-router";
 export default {
-  name: "Home",
-  // components: {
-  //   HelloWorld
-  // },
+  name: "Booking",
+  components: {
+    VRIframe
+  },
+  setup() {
+    
+  },
   data() {
     return {
-      // pickerOpen: null,
+      popupIsOpen: false,
       areas: [],
       bookingForm: {
         c_id: "", //地區c_id
@@ -152,12 +154,24 @@ export default {
   },
 
   mounted() {
-    axios.get("http://sa.inventecvirtual.com/api/list").then(res => {
+    console.log(this.$route);
+
+    if (this.$route.path === "/NewsletterSign-up" || "/NewsletterSign-up/") {
+      this.popupIsOpen = true
+    }
+    axios.get("https://sa.inventecvirtual.com/api/list").then(res => {
       this.areas = res.data.area;
     });
-    
   },
   methods: {
+    openPOP() {
+      this.$router.push('/NewsletterSign-up');
+      this.popupIsOpen = true;
+    },
+    closePOP() {
+      this.$router.push('/');
+      this.popupIsOpen = false
+    },
     onsubmit() {
       let mydata = new FormData();
     
@@ -171,30 +185,66 @@ export default {
       mydata.append("msg", this.bookingForm.msg);
 
     axios
-      .post("http://sa.inventecvirtual.com/api/reserve", mydata)
+      .post("https://sa.inventecvirtual.com/api/reserve", mydata)
       .then(res => {
         console.log(res);
         this.$router.push("/");
+        this.popupIsOpen = false;
+        this.$toast.open({
+          message: "Sent successfully",
+          type: "success",
+          duration: 2000,
+          dismissible: true
+        })
       });
     }
   }
 };
 </script>
 <style lang="scss">
+
 .home {
   
 }
+.linkList {
+  list-style-type: none;
+  margin:0;
+  padding:0;
+  position: fixed;
+  z-index: 1;
+  width:40px;
+  right: 40px;
+  top: 40%;
+  transform: translate(0px, -11%);
+  @media all and (max-width:1023px) {
+    right: 20px;
+    top: 20px;
+    transform: translate(0);
+    width: 32px;
+  }
+  li {
+    cursor: pointer;
+    @media all and (max-width:1023px) {
+      margin-bottom:12px
+    }
+    img {
+      max-width:100%;
+    }
+  }
+}
 .wrapper {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.8);
   width: 100vw;
   height: 100vh;
   position: fixed;
   left: 0;
   top: 0;
-  background-image: url('../assets/bg.jpg');
+  z-index: 10;
+  // background-image: url('../assets/bg.jpg');
   background-size:cover;
   background-position:center center;
   .formBox {
+    position: relative;
     background: #fff;
     border-radius: 0.2em;
     padding: 2em 3em;
@@ -210,6 +260,23 @@ export default {
     max-height: 95vh;
     overflow: auto;
     box-sizing: border-box;
+    .closeBtn {
+      position: absolute;
+      right:8px;
+      top:8px;
+      width:36px;
+      height:36px;
+      padding:8px;
+      border-radius: 50%;
+      
+      &:hover {
+        background: #ccc;
+        cursor: pointer;
+      }
+      img {
+        max-width:100%;
+      }
+    }
     .logo {
       display:block;
       margin:0 auto 1.5em;
@@ -233,6 +300,11 @@ export default {
         &.content {
           width: calc(100% - 8em);
           float: right;
+          &.withoutTitle {
+            @media all and (max-width:768px) {
+              width:100%;
+            }
+          }
           .formItem {
             width: 100%;
             border: 1px solid #aaa;
