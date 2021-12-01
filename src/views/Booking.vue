@@ -1,5 +1,11 @@
 <template>
   <div class="home">
+    <div class="tubeWrapper wrapper" v-show="tubeIsOpen" @click.self="closeTube">
+      <div class="tubeBox">
+        <iframe class="tubeFrame" src="https://www.youtube.com/embed/A4aAFcRf5MA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <span class="closeBtn" @click="closeTube()"><img src="../assets/close.png" alt=""></span>
+      </div>
+    </div>
     <VRIframe />
     <ul class="linkList">
       <li class="news" @click="openPOP()"><img src="../assets/icon05.png" alt=""></li>
@@ -143,6 +149,7 @@ export default {
   data() {
     return {
       popupIsOpen: false,
+      tubeIsOpen:true,
       areas: [],
       bookingForm: {
         c_id: "", //地區c_id
@@ -170,6 +177,9 @@ export default {
     });
   },
   methods: {
+    closeTube() {
+      this.tubeIsOpen = false
+    },
     copyURL() {
       var dummy = document.createElement('input'),
       text = window.location.href;
@@ -427,6 +437,40 @@ export default {
         background:#fff;
         border:1px solid red;
         color:red;
+        cursor: pointer;
+      }
+    }
+  }
+}
+.tubeWrapper {
+  .tubeBox {
+    width:60vw;
+    height:30vw;
+    position:fixed;
+    left:50%;
+    top:50%;
+    transform: translate(-50%,-50%);
+    @media all and (max-width:480px) {
+      width:90vw;
+      height:45vw;
+    }
+    .tubeFrame {
+      width:100%;
+      height:100%;
+    }
+    .closeBtn {
+      position: absolute;
+      right:0px;
+      top:-36px;
+      width:36px;
+      height:36px;
+      padding:8px;
+      border-radius: 50%;
+      img {
+        max-width:100%;
+      }
+      &:hover {
+        background: #ccc;
         cursor: pointer;
       }
     }
