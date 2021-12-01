@@ -2,10 +2,13 @@
   <div class="home">
     <VRIframe />
     <ul class="linkList">
-      <li class="news" @click="openPOP()"><img src="../assets/icon01.png" alt=""></li>
+      <li class="news" @click="openPOP()"><img src="../assets/icon05.png" alt=""></li>
       <li class="fb"><a href="https://www.facebook.com/Inventec-Data-Center-Solutions-101107418050871/?view_public_for=101107418050871" target="_blank"><img src="../assets/icon02.png" alt=""></a></li>
       <li class="in"><a href="https://www.linkedin.com/company/inventec-data-center-solutions?trk=public_profile_experience-item_result-card_subtitle-click" target="_blank"><img src="../assets/icon03.png" alt=""></a></li>
       <li class="tube"><a href="https://www.youtube.com/channel/UCe68PJ6kFvBBfAzjNwIddiA?view_as=subscriber" target="_blank"><img src="../assets/icon04.png" alt=""></a></li>
+      <li class="newsletter"><a href="https://ebg.inventec.com/en/NewsletterSign-up" target="_blank"><img src="../assets/icon01.png" alt=""><span class="text">Newsletter</span></a></li>
+      <li class="copylink" @click="copyURL()"><img src="../assets/icon06.png" alt=""></li>
+      
     </ul>
     <div class="wrapper" @click.self="closePOP()" v-show="popupIsOpen">
       <form class="formBox" @submit.prevent="onsubmit()">
@@ -115,7 +118,7 @@
             >Terms of Service</a>
           </div>
         </div>
-        <button type="submit">submit</button>
+        <button type="submit">Submit</button>
       </form>
     </div>
   </div>
@@ -128,6 +131,7 @@
 import axios from "axios";
 import VRIframe from '@/components/VRIframe.vue'
 import { useRouter, useRoute } from "vue-router";
+import checkIMG from '../assets/check.png'
 export default {
   name: "Booking",
   components: {
@@ -154,16 +158,39 @@ export default {
   },
 
   mounted() {
-    console.log(this.$route);
+    
 
-    if (this.$route.path === "/NewsletterSign-up" || "/NewsletterSign-up/") {
-      this.popupIsOpen = true
+    if (this.$route.path === "/NewsletterSign-up/" | this.$route.path === "/NewsletterSign-up") {
+      this.popupIsOpen = true;
+    } else {
+      this.popupIsOpen = false;
     }
     axios.get("https://sa.inventecvirtual.com/api/list").then(res => {
       this.areas = res.data.area;
     });
   },
   methods: {
+    copyURL() {
+      var dummy = document.createElement('input'),
+      text = window.location.href;
+      
+      document.body.appendChild(dummy);
+      dummy.value = text;
+      dummy.select();
+      document.execCommand('copy');
+      document.body.removeChild(dummy);
+      this.$swal({
+        position: "center-center",
+        // icon: "success",
+        imageUrl:checkIMG,
+        imageWidth: 60,
+        imageHeight: 60,
+        title: "Copy to the clipboard",
+        showConfirmButton: false,
+        showCloseButton: true,
+        timer: 1500
+      });
+    },
     openPOP() {
       this.$router.push('/NewsletterSign-up');
       this.popupIsOpen = true;
@@ -190,12 +217,25 @@ export default {
         console.log(res);
         this.$router.push("/");
         this.popupIsOpen = false;
-        this.$toast.open({
-          message: "Sent successfully",
-          type: "success",
-          duration: 2000,
-          dismissible: true
-        })
+        this.$swal({
+          position: "center-center",
+          // icon: "success",
+          imageUrl:checkIMG,
+          imageWidth: 60,
+          imageHeight: 60,
+          title: "Thank you for your feedback",
+          showConfirmButton: false,
+          showCloseButton: true,
+          timer: 3000
+        });
+
+        // 吐司 msg
+        // this.$toast.open({
+        //   message: "Sent successfully",
+        //   type: "success",
+        //   duration: 2000,
+        //   dismissible: true
+        // })
       });
     }
   }
@@ -215,7 +255,7 @@ export default {
   width:40px;
   right: 40px;
   top: 40%;
-  transform: translate(0px, -11%);
+  transform: translate(0px, -24%);
   @media all and (max-width:1023px) {
     right: 20px;
     top: 20px;
@@ -224,11 +264,50 @@ export default {
   }
   li {
     cursor: pointer;
+    margin-bottom:3px;
+    display:block;
+    position:relative;
+    right:0;
     @media all and (max-width:1023px) {
-      margin-bottom:12px
+      // margin-bottom:12px
     }
     img {
-      max-width:100%;
+      max-width:40px;
+      display:block;
+      float:left;
+      margin-bottom:5px;
+      
+    }
+    span.text {
+      display: block;
+      line-height: 40px;
+      float: left;
+      // width: 82px;
+      font-family: Arial;
+      text-align: center;
+      background: #595756;
+      position: relative;
+      margin-left: -2px;
+      color: #fff;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
+      color:#fff;
+      overflow: hidden;
+      width:0px;
+    }
+    &:after {
+      display:block;
+      content:"";
+      clear:both;
+    }
+    &.newsletter:hover {
+      width:120px;
+      right:80px;
+      transition: .3s;
+      span.text {
+        width:82px;
+        transition: .3s;
+      }
     }
   }
 }
@@ -244,6 +323,7 @@ export default {
   background-size:cover;
   background-position:center center;
   .formBox {
+    font-family: Arial;
     position: relative;
     background: #fff;
     border-radius: 0.2em;
