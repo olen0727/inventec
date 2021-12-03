@@ -149,7 +149,7 @@ export default {
   data() {
     return {
       popupIsOpen: false,
-      tubeIsOpen:true,
+      tubeIsOpen:false,
       areas: [],
       bookingForm: {
         c_id: "", //地區c_id
